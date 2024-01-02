@@ -7,11 +7,24 @@ function App() {
 
   const events = [
     {
-      start: dayjs("2024-01-10T12:00:00").toDate(),
-      end: dayjs("2024-01-10T13:00:00").toDate(),
+      start: dayjs("2024-01-10T09:00:00").toDate(),
+      end: dayjs("2024-01-10T10:00:00").toDate(),
+      title: "Evento 1",
+    },
+    {
+      start: dayjs("2024-01-01T09:00:00").toDate(),
+      end: dayjs("2024-01-02T15:00:00").toDate(),
       title: "Evento 1",
     },
   ];
+
+  const components = {
+    event: (props) => {
+      console.log(props);
+      return <div>Test</div>;
+    },
+  };
+
   return (
     <div
       style={{
@@ -19,7 +32,22 @@ function App() {
         width: "70vw",
       }}
     >
-      <Calendar localizer={localizar} events={events} />
+      <Calendar
+        localizer={localizar}
+        events={events}
+        defaultView="month"
+        toolbar={true}
+        date={dayjs("2024-01-02T12:00:00").toDate()}
+        min={dayjs("2024-01-01T08:00:00").toDate()}
+        max={dayjs("2024-01-31T18:00:00").toDate()}
+        formats={{
+          dayHeaderFormat: (date) => {
+            console.log(date);
+            return dayjs(date).format("DD/MM/YYYY");
+          },
+        }}
+        components={components}
+      />
     </div>
   );
 }
