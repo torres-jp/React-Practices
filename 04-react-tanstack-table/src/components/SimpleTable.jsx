@@ -1,35 +1,55 @@
-import { useReactTable } from "@tanstack/react-table";
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+} from "@tanstack/react-table";
 import data from "../assets/MOCK_DATA.json";
+import dayjs from "dayjs";
 
 function simpleTable() {
   const columns = [
     {
       header: "ID",
       accessorKey: "id",
+      footer: "My Id",
     },
     {
-      header: "Name",
-      accessorKey: "name",
+      header: 'Nombre y Apellido',
+      accessorFn: 
     },
-    {
-      header: "Lastname",
-      accessorKey: "lastname",
-    },
+    // {
+    //   header: "Name",
+    //   accessorKey: "name",
+    //   footer: "My Name",
+    // },
+    // {
+    //   header: "Lastname",
+    //   accessorKey: "lastname",
+    //   footer: "My LastName",
+    // },
     {
       header: "Email",
       accessorKey: "email",
+      footer: "My Email",
     },
     {
       header: "Country",
       accessorKey: "country",
+      footer: "My Country",
     },
     {
       header: "Day of Birth",
-      accessorKey: "dayOfBirth",
+      accessorKey: "dateOfBirth",
+      footer: "My Dayofbirth",
+      cell: (info) => dayjs(info.getValue()).format("DD/MM/YYYY"), 
     },
   ];
 
-  const table = useReactTable({ data, columns });
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
     <div>
@@ -38,22 +58,42 @@ function simpleTable() {
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id}>{header.column.columnDef.header}</th>
+                <th key={header.id}>
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+                </th>
               ))}
             </tr>
           ))}
         </thead>
 
         <tbody>
-          <tr>
-            <td>1</td>
-          </tr>
+          {table.getRowModel().rows.map((row) => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
         </tbody>
 
         <tfoot>
-          <tr>
-            <td>id</td>
-          </tr>
+          {table.getFooterGroups().map((footerGroup) => (
+            <tr key={footerGroup.id}>
+              {footerGroup.headers.map((footer) => (
+                <th key={footer.id}>
+                  {flexRender(
+                    footer.column.columnDef.footer,
+                    footer.getContext()
+                  )}
+                </th>
+              ))}
+            </tr>
+          ))}
         </tfoot>
       </table>
     </div>
