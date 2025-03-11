@@ -9,21 +9,21 @@ interface Item {
   text: string
 }
 
-const INITIAL_ITEMS: Item[] = [
-  {
-    id: crypto.randomUUID(),
-    timestamp: Date.now(),
-    text: 'Video Juegos',
-  },
-  {
-    id: crypto.randomUUID(),
-    timestamp: Date.now(),
-    text: 'Libros',
-  },
-]
+// const INITIAL_ITEMS: Item[] = [
+//   {
+//     id: crypto.randomUUID(),
+//     timestamp: Date.now(),
+//     text: 'Video Juegos',
+//   },
+//   {
+//     id: crypto.randomUUID(),
+//     timestamp: Date.now(),
+//     text: 'Libros',
+//   },
+// ]
 
 function App() {
-  const [items, setItems] = useState(INITIAL_ITEMS)
+  const [items, setItems] = useState<Item[]>([])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -58,7 +58,7 @@ function App() {
         <h1>Prueba Tecnica de React</h1>
         <h2>Añadir y eliminar elementos de una lista</h2>
 
-        <form onSubmit={handleSubmit}>
+        <form aria-label='Añadir elementos a la lista' onSubmit={handleSubmit}>
           <label>
             Elemento a introducir :
             <input
