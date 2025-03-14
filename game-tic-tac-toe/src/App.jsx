@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
 const TURNS = {
-  X: 'x',
-  O: 'o',
+  X: 'x', // true
+  O: 'o', // false
 }
 
 const Square = ({ children, isSelected, updateBoard, index }) => {
