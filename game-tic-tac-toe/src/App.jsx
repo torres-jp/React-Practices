@@ -1,8 +1,10 @@
-import { useState } from 'react'
 import confetti from 'canvas-confetti'
-import Square from './components/Square'
+import { useState } from 'react'
+
+import { Square } from './components/Square.jsx'
 import { TURNS } from './constants'
 import { checkWinner } from './logic/board'
+import { WinnerModal } from './components/WinnerModal.jsx'
 
 function App() {
   const [board, setBoard] = useState(Array(9).fill(null))
@@ -58,19 +60,7 @@ function App() {
         <Square isSelected={turn === TURNS.O}>{TURNS.O}</Square>
       </section>
 
-      {winner !== null && (
-        <section className='winner'>
-          <div className='text'>
-            <h2>{winner === false ? 'Empate' : 'Ganador: '}</h2>
-            <header className='win'>
-              {winner && <Square>{winner}</Square>}
-            </header>
-            <footer>
-              <button onClick={resetGame}>Reiniciar</button>
-            </footer>
-          </div>
-        </section>
-      )}
+      <WinnerModal resetGame={resetGame} winner={winner} />
     </main>
   )
 }
