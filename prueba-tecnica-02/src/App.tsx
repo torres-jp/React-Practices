@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
 import './App.css'
+import { useEffect, useMemo, useState } from 'react'
 
 export interface Movie {
   adult: boolean
@@ -24,11 +24,13 @@ function getRandomMoive(movies: Movie[]): Movie {
 
 function getPartialMovieName(movie: Movie): string {
   const indexes = Array.from({ length: movie.name.length }, (_, index) => index)
-    .sort(() => (Math.random() >= 0.5 ? 1 : -1))
+    .sort((index) =>
+      movie.name[index] === ' ' ? 1 : Math.random() >= 0.5 ? 1 : -1
+    )
     .slice(0, Math.floor(movie.name.length / 2))
 
   return movie.name.split('').reduce((name, letter, index) => {
-    if (indexes.includes(index)) name = name.concat(letter)
+    name = name.concat(indexes.includes(index) ? '_' : letter)
 
     return name
   }, '')
@@ -36,6 +38,10 @@ function getPartialMovieName(movie: Movie): string {
 
 function App() {
   const [movie, setMovie] = useState<Movie | null>(null)
+  const partial = useMemo(() => {
+    if (!movie) return ''
+    return getPartialMovieName(movie)
+  }, [movie])
 
   useEffect(() => {
     fetch('https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=1 ', {
@@ -51,9 +57,40 @@ function App() {
     return <div>Loading...</div>
   }
 
-  console.log(getPartialMovieName(movie))
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
 
-  return <main>{movie.name}</main>
+    const formData = new FormData(event.currentTarget)
+    const guess = formData.get('partial')?.toString()
+
+    if (guess?.toLocaleLowerCase() === movie!.name.toLocaleLowerCase()) {
+      alert('Correct!')
+    } else {
+      alert('Incorrect')
+    }
+  }
+
+  return (
+    <main className='container m-auto grid min-h-screen grid-rows-[auto]'>
+      <form
+        onSubmit={handleSubmit}
+        className='py-8  flex flex-col gap-4 font-mono '
+      >
+        <input
+          className='p-4 text-xl tracking-widest'
+          type='text'
+          readOnly
+          value={partial}
+        />
+        <input
+          className='p-4 text-xl tracking-widest'
+          name='partial'
+          type='text'
+        />
+        <button type='submit'>Guess</button>
+      </form>
+    </main>
+  )
 }
 
 export default App
